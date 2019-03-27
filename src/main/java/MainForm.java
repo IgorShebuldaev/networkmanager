@@ -1,9 +1,4 @@
-import javax.swing.JFrame;
-import javax.swing.JTable;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 public class MainForm {
     public final int WIDTH = 600;
@@ -11,10 +6,12 @@ public class MainForm {
 
     public void createForm() {
         JFrame frame = new JFrame("Main");
+        JScrollPane jScrollPane = new JScrollPane();
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         creatMenuBar(frame);
-        createTable(frame);
+        createTabbedPane(frame, jScrollPane);
 
         frame.setSize(HEIGHT, WIDTH);
         frame.setLocationRelativeTo(null);
@@ -41,28 +38,42 @@ public class MainForm {
         frame.setJMenuBar(menuBar);
     }
 
-    private void createTable(JFrame frame) {
+
+    private JScrollPane createTable(JScrollPane jScrollPane) {
+
         String[] columnNames = {
-                "First Name",
-                "Last Name",
-                "Sport",
-                "# of Years",
-                "Vegetarian"
+                "Apps",
+                "Download Kb/s",
+                "Upload Kb/s",
         };
 
         Object[][] data = {
-                {"Kathy", "Smith",
-                        "Snowboarding", new Integer(5), new Boolean(false)},
-                {"John", "Doe",
-                        "Rowing", new Integer(3), new Boolean(true)},
-                {"Sue", "Black",
-                        "Knitting", new Integer(2), new Boolean(false)},
-                {"Jane", "White",
-                        "Speed reading", new Integer(20), new Boolean(true)},
-                {"Joe", "Brown",
-                        "Pool", new Integer(10), new Boolean(false)}
+                {"Telegram", null, null },
+                {"Chrome", null, null },
+                {"Discord", null, null },
         };
 
-        frame.add(new JScrollPane(new JTable(data, columnNames)));
+        return new JScrollPane(new JTable(data, columnNames));
     }
+
+    private void createTabbedPane(JFrame frame, JScrollPane jScrollPane){
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        tabbedPane.addTab("Graph", createTable(jScrollPane));
+        tabbedPane.addTab("Network", makeTextPanel("void"));
+        tabbedPane.addTab("Usage", null);
+
+        frame.add(tabbedPane);
+
+    }
+
+    protected JComponent makeTextPanel(String text) {
+        JPanel panel = new JPanel(false);
+        JLabel filler = new JLabel(text);
+        filler.setHorizontalAlignment(JLabel.CENTER);
+        panel.add(filler);
+        return panel;
+    }
+
+
 }
