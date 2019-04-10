@@ -1,27 +1,21 @@
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JMenuBar;
-import javax.swing.JScrollPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JTable;
-import javax.swing.JTabbedPane;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 public class MainForm {
     public final int WIDTH = 600;
     public final int HEIGHT = 800;
 
+    JTable jTable = new JTable((TableModel) createTableUsage());
+
     public void createForm() {
-        JFrame frame = new JFrame("Simple NetWorkManager");
-        JScrollPane jScrollPane = new JScrollPane();
+        JFrame frame = new JFrame("Simple NetWorkManager");;
 
         creatMenuBar(frame);
-        createTabbedPane(frame, jScrollPane);
+        createTabbedPane(frame);
 
         frame.setSize(HEIGHT, WIDTH);
         frame.setLocationRelativeTo(null);
@@ -41,9 +35,9 @@ public class MainForm {
                 }
             }
         });
-    }
 
-    // Private section
+
+    }
 
     private void creatMenuBar(JFrame frame) {
         JMenuBar menuBar = new JMenuBar();
@@ -61,10 +55,7 @@ public class MainForm {
         frame.setJMenuBar(menuBar);
     }
 
-
-
-
-    private JScrollPane createTableUsage(JScrollPane jScrollPane) {
+    private JTable createTableUsage() {
 
         String[] columnNames = {
                 "Apps",
@@ -78,10 +69,10 @@ public class MainForm {
                 {null, null, null },
         };
 
-        return new JScrollPane(new JTable(data, columnNames));
+        return (new JTable(data, columnNames));
     }
 
-    private JScrollPane createTableThings(JScrollPane jScrollPane) {
+    private JTable createTableThings() {
 
         String[] columnNames = {
                 "Device",
@@ -95,15 +86,36 @@ public class MainForm {
                 {null, null, null },
         };
 
-        return new JScrollPane(new JTable(data, columnNames));
+        return (new JTable(data, columnNames));
     }
 
-    private void createTabbedPane(JFrame frame, JScrollPane jScrollPane){
+    private void setUpTableData() {
+        DefaultTableModel tableModel = (DefaultTableModel) jTable.getModel();
+        ArrayList<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+
+        for (int i = 0; i < list.size(); i++) {
+            String[] data = new String[5];
+            data[0] = list.get(i);
+            data[1] = list.get(i);
+            data[2] = list.get(i);
+            //Thread.sleep(5000);
+
+            tableModel.addRow(data);
+        }
+        jTable.setModel(tableModel);
+    }
+
+    private void createTabbedPane(JFrame frame){
         JTabbedPane tabbedPane = new JTabbedPane();
 
         tabbedPane.addTab("Graph",  makeTextPanel("void"));
-        tabbedPane.addTab("Usage", createTableUsage(jScrollPane));
-        tabbedPane.addTab("Things", createTableThings(jScrollPane));
+        tabbedPane.addTab("Usage", createTableUsage());
+        tabbedPane.addTab("Things", createTableThings());
 
         frame.add(tabbedPane);
 
