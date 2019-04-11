@@ -9,7 +9,8 @@ public class MainForm {
     public final int WIDTH = 600;
     public final int HEIGHT = 800;
 
-    JTable jTable = new JTable((TableModel) createTableUsage());
+    JTable jTableUsage = createTableUsage();
+    JTable jTableThings = createTableThings();
 
     public void createForm() {
         JFrame frame = new JFrame("Simple NetWorkManager");;
@@ -20,6 +21,13 @@ public class MainForm {
         frame.setSize(HEIGHT, WIDTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        try{
+            setUpTableData();
+        } catch (InterruptedException e){
+            System.out.print("Ops!");
+        }
+
+
 
         frame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
@@ -35,8 +43,6 @@ public class MainForm {
                 }
             }
         });
-
-
     }
 
     private void creatMenuBar(JFrame frame) {
@@ -63,7 +69,7 @@ public class MainForm {
                 "Traffic Type",
         };
 
-        Object[][] data = {
+        String[][] data = {
                 {null, null, null },
                 {null, null, null },
                 {null, null, null },
@@ -80,7 +86,7 @@ public class MainForm {
                 "First Seen",
         };
 
-        Object[][] data = {
+        String[][] data = {
                 {null, null, null },
                 {null, null, null },
                 {null, null, null },
@@ -89,33 +95,29 @@ public class MainForm {
         return (new JTable(data, columnNames));
     }
 
-    private void setUpTableData() {
-        DefaultTableModel tableModel = (DefaultTableModel) jTable.getModel();
+    private void setUpTableData() throws InterruptedException{
+        TableModel tableModel = jTableUsage.getModel();
+
         ArrayList<String> list = new ArrayList<>();
         list.add("1");
         list.add("2");
         list.add("3");
-        list.add("4");
-        list.add("5");
 
         for (int i = 0; i < list.size(); i++) {
-            String[] data = new String[5];
-            data[0] = list.get(i);
-            data[1] = list.get(i);
-            data[2] = list.get(i);
-            //Thread.sleep(5000);
-
-            tableModel.addRow(data);
+            for (int j = 0; j < list.size(); j++) {
+                tableModel.setValueAt(list.get(i), i, j);
+            }
         }
-        jTable.setModel(tableModel);
+        jTableUsage.setModel(tableModel);
+
     }
 
     private void createTabbedPane(JFrame frame){
         JTabbedPane tabbedPane = new JTabbedPane();
 
         tabbedPane.addTab("Graph",  makeTextPanel("void"));
-        tabbedPane.addTab("Usage", createTableUsage());
-        tabbedPane.addTab("Things", createTableThings());
+        tabbedPane.addTab("Usage", new JScrollPane(jTableUsage));
+        tabbedPane.addTab("Things", new JScrollPane(jTableThings));
 
         frame.add(tabbedPane);
 
