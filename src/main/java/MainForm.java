@@ -1,39 +1,32 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 public class MainForm {
-    public final int WIDTH = 600;
-    public final int HEIGHT = 800;
+    private final int WIDTH = 800;
+    private final int HEIGHT = 600;
 
-    JTable jTableUsage = createTableUsage();
-    JTable jTableThings = createTableThings();
+    private JFrame frame = new JFrame("Simple NetWorkManager");
+    private JTable jTableUsage = createTableApps();
+    private JTable jTableThings = createTableDevices();
 
     public void createForm() {
-        JFrame frame = new JFrame("Simple NetWorkManager");;
 
-        creatMenuBar(frame);
-        createTabbedPane(frame);
-
-        frame.setSize(HEIGHT, WIDTH);
+        frame.setJMenuBar(creatMenuBar());
+        frame.add(createTabbedPane());
+        frame.setSize(WIDTH, HEIGHT);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        try{
-            setUpTableData();
-        } catch (InterruptedException e){
-            System.out.print("Ops!");
-        }
 
-
+        setUpTableData();
 
         frame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                 int x = JOptionPane.showConfirmDialog(
                         null,
-                        "Are you sure you want to exit NTM?",
+                        "Are you sure you want to exit?",
                         "Confirm Exit", JOptionPane.YES_NO_OPTION);
 
                 if(x == JOptionPane.YES_OPTION) {
@@ -45,7 +38,7 @@ public class MainForm {
         });
     }
 
-    private void creatMenuBar(JFrame frame) {
+    private JMenuBar creatMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("NTM");
 
@@ -58,10 +51,28 @@ public class MainForm {
         menu.addSeparator();
 
         menuBar.add(menu);
-        frame.setJMenuBar(menuBar);
+        return menuBar;
     }
 
-    private JTable createTableUsage() {
+    private JTabbedPane createTabbedPane(){
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        tabbedPane.addTab("Graph",  makeTextPanel("void"));
+        tabbedPane.addTab("Usage", new JScrollPane(jTableUsage));
+        tabbedPane.addTab("Things", new JScrollPane(jTableThings));
+
+        return tabbedPane;
+    }
+
+    private JLabel makeTextPanel(String text) {
+        JLabel filler = new JLabel(text);
+
+        filler.setHorizontalAlignment(JLabel.CENTER);
+
+        return filler;
+    }
+
+    private JTable createTableApps() {
 
         String[] columnNames = {
                 "Apps",
@@ -78,7 +89,7 @@ public class MainForm {
         return (new JTable(data, columnNames));
     }
 
-    private JTable createTableThings() {
+    private JTable createTableDevices() {
 
         String[] columnNames = {
                 "Device",
@@ -95,40 +106,18 @@ public class MainForm {
         return (new JTable(data, columnNames));
     }
 
-    private void setUpTableData() throws InterruptedException{
+    private void setUpTableData() {
         TableModel tableModel = jTableUsage.getModel();
-
         ArrayList<String> list = new ArrayList<>();
-        list.add("1");
-        list.add("2");
-        list.add("3");
+
+        for (int i = 1; i < 4; i++) {
+            list.add(""+i);
+        }
 
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.size(); j++) {
                 tableModel.setValueAt(list.get(i), i, j);
             }
         }
-        jTableUsage.setModel(tableModel);
-
     }
-
-    private void createTabbedPane(JFrame frame){
-        JTabbedPane tabbedPane = new JTabbedPane();
-
-        tabbedPane.addTab("Graph",  makeTextPanel("void"));
-        tabbedPane.addTab("Usage", new JScrollPane(jTableUsage));
-        tabbedPane.addTab("Things", new JScrollPane(jTableThings));
-
-        frame.add(tabbedPane);
-
-    }
-
-    protected JComponent makeTextPanel(String text) {
-        JPanel panel = new JPanel(false);
-        JLabel filler = new JLabel(text);
-        filler.setHorizontalAlignment(JLabel.CENTER);
-        panel.add(filler);
-        return panel;
-    }
-
 }
